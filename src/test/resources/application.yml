@@ -1,0 +1,26 @@
+spring:
+  application:
+    name: storage
+
+jima:
+  storage:
+    file-upload:
+      validation-rules:
+        - path-pattern: "document/**"
+          max-file-size: 5242880 # 5 MB
+          allowed-extensions:
+            - "txt"
+          allowed-mime-types:
+            - "text/plain"
+        - path-pattern: "validation-test/**"
+          max-file-size: 2097152 # 2 MB
+          allowed-extensions:
+            - "txt"
+          allowed-mime-types:
+            - "text/plain"
+      default-rule:
+        max-file-size: 10485760 # 10 MB
+        allowed-extensions:
+          - "txt"
+        allowed-mime-types:
+          - "text/plain"
