@@ -1,4 +1,4 @@
-package ir.msob.manak.storage.file;
+package ir.msob.manak.dms.file;
 
 import ir.msob.jima.core.commons.id.BaseIdService;
 import ir.msob.jima.storage.commons.BaseStorageService;

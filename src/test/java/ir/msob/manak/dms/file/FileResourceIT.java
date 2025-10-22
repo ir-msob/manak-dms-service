@@ -1,4 +1,4 @@
-package ir.msob.manak.storage.file;
+package ir.msob.manak.dms.file;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.minio.BucketExistsArgs;
@@ -8,13 +8,13 @@ import io.minio.errors.*;
 import ir.msob.jima.core.commons.Constants;
 import ir.msob.jima.core.commons.security.BaseTokenService;
 import ir.msob.jima.core.commons.security.UserInfoUtil;
-import ir.msob.jima.core.commons.util.MultiInputStream;
 import ir.msob.jima.core.test.CoreTestData;
 import ir.msob.jima.storage.ral.minio.beans.MinioStorageProvider;
 import ir.msob.manak.core.model.jima.security.User;
 import ir.msob.manak.core.service.jima.security.UserService;
-import ir.msob.manak.storage.Application;
-import ir.msob.manak.storage.ContainerConfiguration;
+import ir.msob.manak.dms.Application;
+import ir.msob.manak.dms.ContainerConfiguration;
+import ir.msob.manak.dms.TestFilePart;
 import lombok.SneakyThrows;
 import lombok.extern.apachecommons.CommonsLog;
 import org.assertj.core.api.Assertions;
@@ -28,10 +28,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import reactor.core.publisher.Mono;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -40,7 +40,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.concurrent.ExecutionException;
 
 import static ir.msob.jima.core.test.CoreTestData.DEFAULT_STRING;
-import static ir.msob.manak.storage.file.FileDataProvider.*;
+import static ir.msob.manak.dms.file.FileDataProvider.*;
 
 @AutoConfigureWebTestClient
 @SpringBootTest(classes = {Application.class, ContainerConfiguration.class}, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -242,7 +242,10 @@ public class FileResourceIT {
     void delete() throws IOException, ExecutionException, InterruptedException, ServerException, InsufficientDataException, ErrorResponseException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
         createBucketIfNotExists(DEFAULT_RELATED_DOMAIN_TYPE);
         String path = String.join("/", CoreTestData.DEFAULT_ID.toString(), DEFAULT_STRING, DEFAULT_STRING);
-        String filePath = fileService.store(DEFAULT_RELATED_DOMAIN_TYPE, path, TEXT_FILE_NAME, Mono.just(new MultiInputStream(new FileInputStream(TEXT_FILE))), UserService.SYSTEM_USER)
+        // create a FilePart from a local file
+        FilePart filePart = new TestFilePart("file", TEXT_FILE, MediaType.APPLICATION_OCTET_STREAM);
+
+        String filePath = fileService.store(DEFAULT_RELATED_DOMAIN_TYPE, path, TEXT_FILE_NAME, filePart, UserService.SYSTEM_USER)
                 .toFuture()
                 .get();
 
@@ -268,7 +271,10 @@ public class FileResourceIT {
     void get() throws FileNotFoundException, ExecutionException, InterruptedException {
         String path = String.join("/", CoreTestData.DEFAULT_ID.toString(), DEFAULT_STRING, DEFAULT_STRING);
 
-        String filePath = fileService.store(DEFAULT_RELATED_DOMAIN_TYPE, path, TEXT_FILE_NAME, Mono.just(new MultiInputStream(new FileInputStream(TEXT_FILE))), UserService.SYSTEM_USER)
+        // create a FilePart from a local file
+        FilePart filePart = new TestFilePart("file", TEXT_FILE, MediaType.APPLICATION_OCTET_STREAM);
+
+        String filePath = fileService.store(DEFAULT_RELATED_DOMAIN_TYPE, path, TEXT_FILE_NAME, filePart, UserService.SYSTEM_USER)
                 .toFuture()
                 .get();
 

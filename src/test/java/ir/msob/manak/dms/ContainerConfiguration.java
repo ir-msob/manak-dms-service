@@ -1,4 +1,4 @@
-package ir.msob.manak.storage;
+package ir.msob.manak.dms;
 
 import dasniko.testcontainers.keycloak.KeycloakContainer;
 import ir.msob.jima.core.beans.properties.JimaProperties;

@@ -1,9 +1,9 @@
 server:
-  port: 8080
+  port: 8586
 
 spring:
   application:
-    name: storage
+    name: dms
   profiles:
     active: dev
   main:
@@ -25,12 +25,16 @@ spring:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
       bootstrap-servers: localhost:9092
+  minio:
+    url: http://localhost:9000
+    access-key: minioadmin
+    secret-key: minioadmin
 
   security:
     oauth2:
       resource-server:
         jwt:
-          issuer-uri: http://localhost:9090/realms/test-realm
+          issuer-uri: http://localhost:8080/realms/test-realm
       client:
         provider:
           service-client:
