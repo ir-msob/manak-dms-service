@@ -245,9 +245,10 @@ public class FileResourceIT {
         // create a FilePart from a local file
         FilePart filePart = new TestFilePart("file", TEXT_FILE, MediaType.APPLICATION_OCTET_STREAM);
 
-        String filePath = fileService.store(DEFAULT_RELATED_DOMAIN_TYPE, path, TEXT_FILE_NAME, filePart, UserService.SYSTEM_USER)
+        String filePath = fileService.store(DEFAULT_RELATED_DOMAIN_TYPE, path, filePart, UserService.SYSTEM_USER)
                 .toFuture()
-                .get();
+                .get()
+                .getFilePath();
 
         boolean exists = minioStorageProvider.exists(DEFAULT_RELATED_DOMAIN_TYPE, filePath);
         Assertions.assertThat(exists).isTrue();
@@ -274,9 +275,10 @@ public class FileResourceIT {
         // create a FilePart from a local file
         FilePart filePart = new TestFilePart("file", TEXT_FILE, MediaType.APPLICATION_OCTET_STREAM);
 
-        String filePath = fileService.store(DEFAULT_RELATED_DOMAIN_TYPE, path, TEXT_FILE_NAME, filePart, UserService.SYSTEM_USER)
+        String filePath = fileService.store(DEFAULT_RELATED_DOMAIN_TYPE, path, filePart, UserService.SYSTEM_USER)
                 .toFuture()
-                .get();
+                .get()
+                .getFilePath();
 
         boolean exists = minioStorageProvider.exists(DEFAULT_RELATED_DOMAIN_TYPE, filePath);
         Assertions.assertThat(exists).isTrue();
